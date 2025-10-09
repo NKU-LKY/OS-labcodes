@@ -1,3 +1,6 @@
+#add path
+export PATH := /mnt/hgfs/share/riscv-elf-toolchains/bin:$(PATH)
+
 PROJ	:= lab1
 EMPTY	:=
 SPACE	:= $(EMPTY) $(EMPTY)
@@ -163,14 +166,14 @@ qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 		-machine virt \
 		-nographic \
 		-bios default \
-		-device loader,file=$(UCOREIMG),addr=0x80200000
+		-kernel $(UCOREIMG)
 
 debug: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) \
 		-machine virt \
 		-nographic \
 		-bios default \
-		-device loader,file=$(UCOREIMG),addr=0x80200000\
+		-kernel $(UCOREIMG)\
 		-s -S
 
 gdb:
