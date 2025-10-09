@@ -91,7 +91,11 @@ Program received signal SIGINT, Interrupt.
 # 修改后的加载方式
 -kernel $(UCOREIMG) \  # 改为 -kernel 参数
 ```
-之后重新操作实验指导书中的步骤，可以得到预期的输出。在continue后，成功在断点处停止：
+之后重新操作实验指导书中的步骤，可以得到预期的输出。
+
+关于这么修改的原因，可能是-kernel 参数的工作方式是QEMU 加载 OpenSBI 到 0x80000000，并告诉 OpenSBI："内核在 bin/kernel，入口点是 0x80200000"，OpenSBI 初始化后，主动跳转到 0x80200000。而-device loader 参数的工作方式是QEMU 加载 OpenSBI 到 0x80000000，并静默地把内核二进制数据拷贝到 0x80200000，OpenSBI 不知道这个操作，继续执行自己的代码，在它初始化完成后，不知道要跳转到哪里。
+
+在continue后，成功在断点处停止：
 ```
 (gdb) c
 Continuing.
