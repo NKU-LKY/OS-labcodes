@@ -1,6 +1,6 @@
 ffffffffc0200000 .text
 ffffffffc0201788 .rodata
-ffffffffc0202620 .srodata.nbase
+ffffffffc0202610 .srodata.nbase
 ffffffffc0203000 .data
 ffffffffc0206010 .sdata
 ffffffffc0206018 .bss
@@ -36,7 +36,7 @@ ffffffffc0200f38 buddy_system_free_pages
 0000000000000000 pmm.c
 0000000000000000 printfmt.c
 ffffffffc02012de printnum
-ffffffffc02025e8 error_string
+ffffffffc02025d8 error_string
 0000000000000000 sbi.c
 0000000000000000 string.c
 ffffffffc020004a print_kerninfo
@@ -68,7 +68,7 @@ ffffffffc0206010 SBI_CONSOLE_PUTCHAR
 ffffffffc0206148 satp_virtual
 ffffffffc02016a6 printfmt
 ffffffffc0201716 strcmp
-ffffffffc0202458 buddy_system_pmm_manager
+ffffffffc0202448 buddy_system_pmm_manager
 ffffffffc02016c6 sbi_console_putchar
 ffffffffc0201102 pmm_init
 ffffffffc02010de alloc_pages
@@ -76,7 +76,7 @@ ffffffffc020012a vcprintf
 ffffffffc020017e cputs
 ffffffffc0205000 bootstacktop
 ffffffffc0203000 bootstack
-ffffffffc0202620 nbase
+ffffffffc0202610 nbase
 ffffffffc02016e0 strlen
 ffffffffc020022c dtb_init
 ffffffffc0206160 pages

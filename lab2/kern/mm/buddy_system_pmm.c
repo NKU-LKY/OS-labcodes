@@ -11,9 +11,6 @@
  * 2. 每个空闲块都有对应的伙伴块
  * 3. 分配时如果找不到合适大小的块，就分裂更大的块
  * 4. 释放时如果伙伴块也是空闲的，就合并成更大的块
- * 
- * 优点：外部碎片少，分配和释放速度快
- * 缺点：内部碎片可能较多
  */
 
 #define MAX_ORDER 10  // 最大阶数，支持最大 2^10 = 1024 页
@@ -78,7 +75,6 @@ buddy_system_init(void) {
 }
 
 // 初始化内存映射
-// 修复后的初始化内存映射函数
 static void
 buddy_system_init_memmap(struct Page *base, size_t n) {
     assert(n > 0);
@@ -87,14 +83,14 @@ buddy_system_init_memmap(struct Page *base, size_t n) {
     struct Page *p = base;
     for (; p != base + n; p++) {
         // 检查页面是否被标记为保留
-        // 注意：有些页面可能在 page_init 中已经被标记为保留
-        // 我们只需要确保它们有正确的属性
+        // 有些页面可能在 page_init 中已经被标记为保留
+        // 只需要确保它们有正确的属性
         p->flags = 0;
         set_page_ref(p, 0);
         ClearPageProperty(p);
         
-        // 设置页面为保留状态（如果需要）
-        // 但不要覆盖已经设置的保留标志
+        // 设置页面为保留状态
+        // 但不覆盖已经设置的保留标志
         if (!PageReserved(p)) {
             SetPageReserved(p);
         }
@@ -444,9 +440,9 @@ buddy_system_check(void) {
     cprintf("Final free pages: %lu\n", final_free_pages);
     
     if (final_free_pages == initial_free_pages) {
-        cprintf("✅ Memory conservation verified\n");
+        cprintf("Memory conservation verified\n");
     } else {
-        cprintf("❌ Memory leak detected!\n");
+        cprintf("Memory leak detected!\n");
     }
     
     cprintf("\n");

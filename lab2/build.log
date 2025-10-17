@@ -1,0 +1,83 @@
++ cc kern/init/entry.S
++ cc kern/init/init.c
++ cc kern/libs/stdio.c
++ cc kern/debug/panic.c
++ cc kern/driver/console.c
++ cc kern/driver/dtb.c
++ cc kern/mm/best_fit_pmm.c
++ cc kern/mm/buddy_system_pmm.c
++ cc kern/mm/default_pmm.c
++ cc kern/mm/pmm.c
++ cc kern/mm/slub_pmm.c
+kern/mm/slub_pmm.c: In function 'slub_alloc_slab':
+kern/mm/slub_pmm.c:158:25: error: implicit declaration of function 'buddy_system_alloc_pages' [-Werror=implicit-function-declaration]
+  158 |     struct Page *page = buddy_system_alloc_pages(pages_needed);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+kern/mm/slub_pmm.c:158:25: error: initialization of 'struct Page *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
+kern/mm/slub_pmm.c:168:9: error: implicit declaration of function 'buddy_system_free_pages' [-Werror=implicit-function-declaration]
+  168 |         buddy_system_free_pages(page, pages_needed);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+kern/mm/slub_pmm.c:181:27: error: implicit declaration of function 'page2kva'; did you mean 'page2pa'? [-Werror=implicit-function-declaration]
+  181 |     void *start = (void *)page2kva(page);
+      |                           ^~~~~~~~
+      |                           page2pa
+kern/mm/slub_pmm.c:181:19: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+  181 |     void *start = (void *)page2kva(page);
+      |                   ^
+kern/mm/slub_pmm.c: In function 'slub_alloc_object':
+kern/mm/slub_pmm.c:225:75: error: macro "le2page" passed 3 arguments, but takes just 2
+  225 |         slab = le2page(list_next(&cache->slabs_partial), struct slab, list);
+      |                                                                           ^
+In file included from kern/mm/pmm.h:6,
+                 from kern/mm/slub_pmm.c:1:
+kern/mm/memlayout.h:53: note: macro "le2page" defined here
+   53 | #define le2page(le, member)                 \
+      | 
+kern/mm/slub_pmm.c:225:16: error: 'le2page' undeclared (first use in this function); did you mean 'pa2page'?
+  225 |         slab = le2page(list_next(&cache->slabs_partial), struct slab, list);
+      |                ^~~~~~~
+      |                pa2page
+kern/mm/slub_pmm.c:225:16: note: each undeclared identifier is reported only once for each function it appears in
+kern/mm/slub_pmm.c:229:72: error: macro "le2page" passed 3 arguments, but takes just 2
+  229 |         slab = le2page(list_next(&cache->slabs_free), struct slab, list);
+      |                                                                        ^
+kern/mm/memlayout.h:53: note: macro "le2page" defined here
+   53 | #define le2page(le, member)                 \
+      | 
+kern/mm/slub_pmm.c: In function 'slub_free_object':
+kern/mm/slub_pmm.c:274:55: error: macro "le2page" passed 3 arguments, but takes just 2
+  274 |         struct slab *s = le2page(le, struct slab, list);
+      |                                                       ^
+kern/mm/memlayout.h:53: note: macro "le2page" defined here
+   53 | #define le2page(le, member)                 \
+      | 
+kern/mm/slub_pmm.c:274:26: error: 'le2page' undeclared (first use in this function); did you mean 'pa2page'?
+  274 |         struct slab *s = le2page(le, struct slab, list);
+      |                          ^~~~~~~
+      |                          pa2page
+kern/mm/slub_pmm.c:285:59: error: macro "le2page" passed 3 arguments, but takes just 2
+  285 |             struct slab *s = le2page(le, struct slab, list);
+      |                                                           ^
+kern/mm/memlayout.h:53: note: macro "le2page" defined here
+   53 | #define le2page(le, member)                 \
+      | 
+kern/mm/slub_pmm.c: In function 'slub_alloc_pages':
+kern/mm/slub_pmm.c:327:16: error: returning 'int' from a function with return type 'struct Page *' makes pointer from integer without a cast [-Werror=int-conversion]
+  327 |         return buddy_system_alloc_pages(n);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+kern/mm/slub_pmm.c:334:16: error: returning 'int' from a function with return type 'struct Page *' makes pointer from integer without a cast [-Werror=int-conversion]
+  334 |         return buddy_system_alloc_pages(n);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+kern/mm/slub_pmm.c:340:16: error: returning 'int' from a function with return type 'struct Page *' makes pointer from integer without a cast [-Werror=int-conversion]
+  340 |         return buddy_system_alloc_pages(n);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+kern/mm/slub_pmm.c: In function 'slub_free_pages':
+kern/mm/slub_pmm.c:364:20: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+  364 |     void *object = (void *)page2kva(base);
+      |                    ^
+kern/mm/slub_pmm.c: In function 'slub_nr_free_pages':
+kern/mm/slub_pmm.c:371:12: error: implicit declaration of function 'buddy_system_nr_free_pages' [-Werror=implicit-function-declaration]
+  371 |     return buddy_system_nr_free_pages();
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
+make: *** [Makefile:116：obj/kern/mm/slub_pmm.o] 错误 1

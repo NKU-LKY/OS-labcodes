@@ -11,10 +11,10 @@ make clean
 make "DEFS=-DBUDDY_SYSTEM_TEST"
 
 if [ $? -ne 0 ]; then
-    echo "❌ Compilation failed!"
+    echo "Compilation failed!"
     exit 1
 fi
-echo "✅ Compilation successful"
+echo "Compilation successful"
 
 echo "Step 2: Running QEMU (this will take 10-15 seconds)..."
 echo "----------------------------------------"
