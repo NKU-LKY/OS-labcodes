@@ -41,6 +41,10 @@
     # get sr, epc, badvaddr, cause
     # Set sscratch register to 0, so that if a recursive exception
     # occurs, the exception vector knows it came from the kernel
+
+    # 获取 sr、epc、badvaddr、cause
+    # 将 sscratch 寄存器设置为 0，这样如果发生递归异常，
+    # 异常向量就知道它来自内核
     csrrw s0, sscratch, x0
     csrr s1, sstatus
     csrr s2, sepc
@@ -110,4 +114,6 @@ __alltraps:
 __trapret:
     RESTORE_ALL
     # return from supervisor call
+
+    # 从监管模式调用返回
     sret

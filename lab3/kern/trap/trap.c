@@ -8,8 +8,10 @@
 #include <riscv.h>
 #include <stdio.h>
 #include <trap.h>
+#include <sbi.h>
 
 #define TICK_NUM 100
+static int num = 0;
 
 static void print_ticks() {
     cprintf("%d ticks\n", TICK_NUM);
@@ -41,6 +43,17 @@ void idt_init(void) {
      *     You don't know the meaning of this instruction? just google it! and
      * check the libs/x86.h to know more.
      *     Notice: the argument of lidt is idt_pd. try to find it!
+     */
+     /* (1) 每个中断服务例程(ISR)的入口地址在哪里？(这是RISC-V架构的)
+     *     所有ISR的入口地址都存储在__vectors中。uintptr_t __vectors[]在哪里？
+     *     __vectors[]在kern/trap/vector.S中，该文件由tools/vector.c生成
+     *     (在lab3中尝试"make"命令，然后在kern/trap目录下找到vector.S)
+     *     你可以使用"extern uintptr_t __vectors[];"来定义这个外部变量，后续会用到
+     * (2) 现在你应该在中断描述表(IDT)中设置ISR的条目
+     *     你能在这个文件中看到idt[256]吗？是的，这就是IDT！你可以使用SETGATE宏来设置IDT的每个项
+     * (3) 设置完IDT的内容后，你将使用'lidt'指令让CPU知道IDT的位置
+     *     你不了解这个指令的含义？去谷歌搜索一下！并查看libs/x86.h以了解更多
+     *     注意：lidt的参数是idt_pd。尝试找到它！
      */
 
     extern void __alltraps(void);
@@ -130,6 +143,13 @@ void interrupt_handler(struct trapframe *tf) {
              *(3)当计数器加到100的时候，我们会输出一个`100ticks`表示我们触发了100次时钟中断，同时打印次数（num）加一
             * (4)判断打印次数，当打印次数为10时，调用<sbi.h>中的关机函数关机
             */
+            clock_set_next_event();
+            if (++ticks % TICK_NUM == 0) {
+                print_ticks();
+                if (++num >= 10) {
+                    sbi_shutdown();
+                }
+            }
             break;
         case IRQ_H_TIMER:
             cprintf("Hypervisor software interrupt\n");
@@ -168,6 +188,9 @@ void exception_handler(struct trapframe *tf) {
              *(2)输出异常指令地址
              *(3)更新 tf->epc寄存器
             */
+            cprintf("Exception type: Illegal instruction\n");
+    	    cprintf("Illegal instruction caught at 0x%08x\n", tf->epc);
+            tf->epc += 4;
             break;
         case CAUSE_BREAKPOINT:
             //断点异常处理
@@ -176,6 +199,9 @@ void exception_handler(struct trapframe *tf) {
              *(2)输出异常指令地址
              *(3)更新 tf->epc寄存器
             */
+            cprintf("Exception type: breakpoint\n");
+            cprintf("ebreak caught at 0x%08x\n", tf->epc);
+            tf->epc += 2;
             break;
         case CAUSE_MISALIGNED_LOAD:
             break;
